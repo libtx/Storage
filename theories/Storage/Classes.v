@@ -76,8 +76,8 @@ Section WriteLog.
     | wl_delete k => k
     end.
 
-  Definition wlog_elem_apply (s : T) (l : Wlog_elem) : T :=
-    match l with
+  Definition wlog_elem_apply (e : Wlog_elem) (s : T) : T :=
+    match e with
     | wl_write k v => put k v s
     | wl_delete k => delete k s
     end.
@@ -85,7 +85,7 @@ Section WriteLog.
   Definition Wlog := list Wlog_elem.
 
   Definition wlog_apply (l : Wlog) (s : T) :=
-    fold_left wlog_elem_apply l s.
+    fold_right wlog_elem_apply s l.
 
   Definition wlog_has_key (k : K) (l : Wlog) : Prop :=
     In k (map (fun x => match x with
