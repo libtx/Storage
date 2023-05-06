@@ -61,7 +61,7 @@ Section Equivalence.
 End Equivalence.
 
 Notation "s1 =s= s2" := (s_eq s1 s2) (at level 50).
-Hint Constructors s_eq : storage.
+#[export] Hint Constructors s_eq : storage.
 
 Section WriteLog.
   Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
