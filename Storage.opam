@@ -3,7 +3,7 @@ version: "dev"
 
 homepage: "https://github.com/libtx/Storage"
 dev-repo: "git+https://github.com/libtx/Storage.git"
-license: "GPL-3"
+license: "GPL3"
 maintainer: "noreply@example.com"
 synopsis: "Formal model of storage backend"
 description: """
@@ -14,8 +14,8 @@ build: [
 ]
 install: [make "install"]
 depends: [
-  "coq" {(>= "8.11" & < "8.17~") | (= "dev")}
-  "coq-record-update" {(>= "0.2" & < "0.3~")}
+  "coq" {(>= "8.11" & < "8.18~") | (= "dev")}
+  "coq-record-update" {(>= "0.3" & < "0.4~")}
   "coq-stdpp"
   "coq-equations"
   "coq-hammer"
