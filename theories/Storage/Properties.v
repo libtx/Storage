@@ -227,6 +227,8 @@ Section dirty_bootstrap.
   Context `{KeysSnapshot} `{HKeq_dec : EqDec K eq}.
 
   Inductive LossyWlog : @Wlog K V -> @Wlog K V -> Prop :=
+  | lwl_nil :
+      LossyWlog [] []
   | lwl_skip : forall a l l',
       LossyWlog l l' ->
       LossyWlog (a :: l) l'
@@ -282,7 +284,7 @@ Section dirty_bootstrap.
           repeat rewrite wlog_cons_get_different by assumption.
           simpl.
           rewrite wlog_append_get_different by assumption.
-          unfold_s_eq in H1. specialize (H1 k_).
+          unfold_s_eq in H1.
           apply H1.
   Qed.
 End dirty_bootstrap.
