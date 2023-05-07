@@ -1,0 +1,23 @@
+name: coqchk
+
+on: [push, pull_request]
+
+# Things that don't work:
+#
+# - actions/checkout@v3 inside "coqorg/coq...-flambda" container.
+#   Something something /etc/release not found
+#
+
+jobs:
+  coqchk:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Run
+      shell: bash
+      run: |
+        docker run -v "$(pwd):/home/coq/repo:rw" \
+                   "coqorg/coq:8.17.0-ocaml-4.14.1-flambda" \
+                   bash -c 'cd /home/coq/repo && opam install . -y && make validate'

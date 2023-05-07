@@ -1,0 +1,17 @@
+#+TITLE: Storage
+
+This repository contains:
+
+- Typeclass containing basic interface of the key-value storage and its properties: =LibTx.Storage.Storage=
+  (It doesn't include any methods for enumerating the keys)
+- Definition of storage equivalence
+- =LibTx.Storage.KeysSnapshot= class that implements one possible method of enumerating the keys:
+  by returning list of all keys,
+  think something along the lines of (level|rocks)db snapshot feature
+- Some tactics that simplify chains of write/delete/get operations
+- =Wlog= type describing write-ahead log (WAL)
+- Wlog equivalence definition
+- Some theorems related to Wlog equivalence
+
+Instances:
+- =LibTx.Storage.Instances.List=
