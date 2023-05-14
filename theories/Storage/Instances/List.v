@@ -12,7 +12,7 @@ Context {K V : Type} `{HKeq_dec : EqDec K eq}.
 
 Definition t := list (K * V).
 
-Definition eq_dec (a b : K) : {a = b} + {a <> b}.
+Let eq_dec (a b : K) : {a = b} + {a <> b}.
 Proof.
   apply (HKeq_dec a b).
 Defined.
