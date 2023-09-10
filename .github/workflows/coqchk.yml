@@ -9,15 +9,32 @@ on: [push, pull_request]
 #
 
 jobs:
-  coqchk:
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: ubuntu-latest  # container actions require GNU/Linux
+    strategy:
+      matrix:
+        coq_version:
+          - '8.17'
+        ocaml_version: ['default']
+      fail-fast: false  # don't stop jobs if one fails
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+      - uses: coq-community/docker-coq-action@v1
+        with:
+          opam_file: 'coq-libtx-storage.opam'
+          coq_version: ${{ matrix.coq_version }}
+          ocaml_version: ${{ matrix.ocaml_version }}
 
-    - name: Run
-      shell: bash
-      run: |
-        docker run -v "$(pwd):/home/coq/repo:rw" \
-                   "coqorg/coq:8.17.0-ocaml-4.14.1-flambda" \
-                   bash -c 'cd /home/coq/repo && opam install . -y && make validate'
+# jobs:
+#   coqchk:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v1
+
+#     - name: Run
+#       shell: bash
+#       run: |
+#         docker run -v "$(pwd):/home/coq/repo:rw" \
+#                    "coqorg/coq:8.17.0-ocaml-4.14.1-flambda" \
+#                    bash -c 'cd /home/coq/repo && opam install . -y && make validate'
