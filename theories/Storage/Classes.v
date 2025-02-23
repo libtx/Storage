@@ -94,7 +94,7 @@ Section Setoid.
       Equivalence_Transitive := s_eq_transitive;
     |}.
 
-  Global Instance s_eq_setiod : Setoid t :=
+  Global Instance s_eq_setoid : Setoid t :=
     {|
       equiv := s_eq;
       setoid_equiv := s_eq_equiv;

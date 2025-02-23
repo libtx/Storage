@@ -53,19 +53,19 @@ End basic.
 Section s_eq.
   Context {t1 t2} `{Storage t1} `{Storage t2}.
 
-  Lemma s_eq_refl a :
+  Lemma s_eq_refl_dist a :
     a =s= a.
   Proof.
     sauto.
   Qed.
 
-  Lemma s_eq_trans a b c :
+  Lemma s_eq_trans_dist a b c :
     a =s= b -> b =s= c -> a =s= c.
   Proof.
     sauto.
   Qed.
 
-  Lemma s_eq_symm a b :
+  Lemma s_eq_symm_dist a b :
     a =s= b -> b =s= a.
   Proof.
     sauto.
@@ -185,7 +185,7 @@ Section wlog_props.
     intros H12 H23 s.
     specialize (H12 s).
     specialize (H23 s).
-    eapply s_eq_trans; eauto.
+    eapply s_eq_trans_dist; eauto.
   Qed.
 
   Lemma wlog_equiv_refl l :
@@ -199,7 +199,7 @@ Section wlog_props.
     wlog_equiv l1 l2 -> wlog_equiv l2 l1.
   Proof.
     intros H12 s. specialize (H12 s).
-    now apply s_eq_symm.
+    now apply s_eq_symm_dist.
   Qed.
 
   Global Instance Wlog_refl : Reflexive wlog_equiv := wlog_equiv_refl.
