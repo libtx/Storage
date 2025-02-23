@@ -1,6 +1,7 @@
 From Coq Require Import
      List
-     Classes.EquivDec.
+     Classes.EquivDec
+     Classes.SetoidClass.
 
 Section defns.
   Context {K V : Type}.
@@ -53,15 +54,74 @@ Section Operations.
   Defined.
 End Operations.
 
-Section Equivalence.
+Section EquivalenceOfDistinctStorages.
   Context {K V} {T1 T2} `{@Storage K V T1, Storage K V T2}.
 
   Inductive s_eq (s1 : T1) (s2 : T2) :=
   | s_eq_ : (forall k, get k s1 = get k s2) -> s_eq s1 s2.
-End Equivalence.
+End EquivalenceOfDistinctStorages.
 
 Notation "s1 =s= s2" := (s_eq s1 s2) (at level 50).
 #[export] Hint Constructors s_eq : storage.
+
+Section Setoid.
+  Context `{Hstorage : Storage}.
+
+  Global Instance s_eq_refl : Reflexive s_eq.
+  Proof.
+    intros x. constructor. intros k.
+    reflexivity.
+  Qed.
+
+  Global Instance s_eq_symmetry : Symmetric s_eq.
+  Proof.
+    intros x y H. constructor. intros k.
+    destruct H as [H].
+    now rewrite H.
+  Qed.
+
+  Global Instance s_eq_transitive : Transitive s_eq.
+  Proof.
+    intros x y z Hxy Hyz. constructor. intros k.
+    destruct Hxy as [Hxy]. destruct Hyz as [Hyz].
+    now rewrite Hxy, Hyz.
+  Qed.
+
+  Global Instance s_eq_equiv : Equivalence s_eq :=
+    {|
+      Equivalence_Reflexive := s_eq_refl;
+      Equivalence_Symmetric := s_eq_symmetry;
+      Equivalence_Transitive := s_eq_transitive;
+    |}.
+
+  Global Instance s_eq_setiod : Setoid t :=
+    {|
+      equiv := s_eq;
+      setoid_equiv := s_eq_equiv;
+    |}.
+End Setoid.
+
+Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@put K V t H) with
+    signature (@eq K) ==> (@eq V) ==> (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as put_mor.
+Proof.
+  intros k v s1 s2 Hs.
+  destruct Hs as [Hs].
+  constructor. intros k_.
+  destruct (equiv_dec k k_) as [Heq | Hneq].
+  - rewrite Heq. now repeat rewrite keep.
+  - repeat rewrite <- distinct; auto.
+Qed.
+
+Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@delete K V t H) with
+    signature (@eq K) ==> (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as delete_mor.
+Proof.
+  intros k s1 s2 Hs.
+  destruct Hs as [Hs].
+  constructor. intros k_.
+  destruct (equiv_dec k k_) as [Heq | Hneq].
+  - rewrite Heq. now repeat rewrite delete_keep.
+  - repeat rewrite <- delete_distinct; auto.
+Qed.
 
 Section WriteLog.
   Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
