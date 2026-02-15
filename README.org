@@ -14,4 +14,5 @@ This repository contains:
 - Some theorems related to Wlog equivalence
 
 Instances:
-- =LibTx.Storage.Instances.List=
+- =LibTx.Storage.Instances.List=: pure storage instance based on flat lists
+- =LibTx.Storage.Instances.AVL=: pure storage instance based on AVL-tree (wrapper over =FMapAVL= from the standard library)
