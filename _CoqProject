@@ -4,3 +4,4 @@ theories/Storage/Tactics.v
 theories/Storage/Properties.v
 theories/Storage.v
 theories/Storage/Instances/List.v
+theories/Storage/Instances/AVL.v

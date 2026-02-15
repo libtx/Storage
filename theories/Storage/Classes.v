@@ -1,7 +1,7 @@
 From Coq Require Import
-     List
-     Classes.EquivDec
-     Classes.SetoidClass.
+  List
+  Classes.EquivDec
+  Classes.SetoidClass.
 
 Section defns.
   Context {K V : Type}.
