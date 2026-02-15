@@ -1,9 +1,6 @@
 From Coq Require Import
-  FMapInterface
   FMapAVL
-  OrderedType
-  OrderedTypeEx
-  ZArith.
+  OrderedType.
 
 Require Import Classes.
 
