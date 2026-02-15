@@ -5,7 +5,7 @@ homepage: "https://github.com/libtx/Storage"
 dev-repo: "git+https://github.com/libtx/Storage.git"
 license: "GPL3"
 maintainer: "noreply@example.com"
-synopsis: "Formal model of storage backend"
+synopsis: "Axiomatic abstraction of storage container"
 description: """
 """
 
@@ -14,14 +14,12 @@ build: [
 ]
 install: [make "install"]
 depends: [
-  "coq" {(>= "8.19") | (= "dev")}
-  "coq-record-update" {(>= "0.3" & < "0.4~")}
+  "coq" {(>= "8.19")}
   "coq-hammer"
 ]
 
 tags: [
-  "keyword:program verification"
-  "keyword:distributed algorithms"
+  "keyword:containers"
 ]
 authors: [
   "k32"

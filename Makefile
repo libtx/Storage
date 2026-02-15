@@ -14,7 +14,7 @@ CoqMakefile: Makefile _CoqProject
 invoke-coqmakefile: CoqMakefile
 	$(MAKE) --no-print-directory -f CoqMakefile $(filter-out $(KNOWNTARGETS),$(MAKECMDGOALS))
 
-.PHONY: invoke-coqmakefile record-update $(KNOWNFILES)
+.PHONY: invoke-coqmakefile $(KNOWNFILES)
 
 ####################################################################
 ##                      Your targets here                         ##
