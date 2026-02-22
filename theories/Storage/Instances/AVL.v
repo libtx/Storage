@@ -100,5 +100,3 @@ Module Type Make (E : OrderedType).
       |}.
   End defn.
 End Make.
-
-Print Module Make.
