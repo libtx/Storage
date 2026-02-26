@@ -123,6 +123,13 @@ Proof.
   - repeat rewrite <- delete_distinct; auto.
 Qed.
 
+Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@get K V t H) with
+    signature (@eq K) ==> (@s_eq K V t t H H) ==> (@eq (option V)) as get_mor.
+Proof.
+  intros k s1 s2 Hs.
+  now destruct Hs as [Hs].
+Qed.
+
 Section WriteLog.
   Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
 

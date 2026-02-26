@@ -7,8 +7,6 @@ Require Import Classes.
 Module Type Make (E : OrderedType).
   Module M := FMapAVL.Make E.
 
-  Definition t := M.t.
-
   Parameter dec_eq_is_eq : forall a b, E.eq a b <-> a = b.
 
   Section defn.
@@ -64,7 +62,7 @@ Module Type Make (E : OrderedType).
       - now rewrite M.Raw.Proofs.In_alt in H.
     Qed.
 
-    Lemma fmap_delete_distinct (s : t ValT) k1 k2 :
+    Lemma fmap_delete_distinct (s : M.t ValT) k1 k2 :
       k1 <> k2 ->
       M.find k1 s = M.find k1 (M.remove k2 s).
     Proof.
@@ -86,7 +84,7 @@ Module Type Make (E : OrderedType).
         eapply M.remove_3; eauto.
     Qed.
 
-    Global Instance fmapStorage : @Storage E.t ValT (t ValT) :=
+    Global Instance fmapStorage : @Storage E.t ValT (M.t ValT) :=
       {|
         new := @M.empty ValT;
         get := @M.find ValT;

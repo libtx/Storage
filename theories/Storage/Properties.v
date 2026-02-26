@@ -16,7 +16,7 @@ Section basic.
 
   Lemma s_eq_self : forall (s : T), s =s= s.
   Proof.
-    sauto.
+    now constructor.
   Qed.
 
   Hint Resolve s_eq_self : storage.
@@ -24,11 +24,9 @@ Section basic.
   Lemma put_eq_eq : forall (s1 s2 : T) k v,
       s1 =s= s2 ->
       put k v s1 =s= put k v s2.
-  Proof with auto with storage.
+  Proof.
     intros s1 s2 k v Heq.
-    unfold_s_eq as k_.
-    unfold_s_eq in Heq.
-    storage_key_case_analysis k_...
+    now rewrite Heq.
   Qed.
 
   Lemma put_same : forall (s : T) k v,
@@ -112,7 +110,7 @@ Section wlog_props.
     intros l s1 s2 Hs12.
     induction l as [|[k v|k] l IH].
     - sauto.
-    - unfold_s_eq as k_. unfold_s_eq in IH. specialize (IH k_).
+    - unfold_s_eq as k_.  unfold_s_eq in IH. specialize (IH k_).
       simpl. storage_key_case_analysis k_...
     - unfold_s_eq as k_. unfold_s_eq in IH. specialize (IH k_).
       simpl. storage_key_case_analysis k_...
