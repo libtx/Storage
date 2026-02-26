@@ -101,10 +101,10 @@ Section Setoid.
     |}.
 End Setoid.
 
-Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@put K V t H) with
-    signature (@eq K) ==> (@eq V) ==> (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as put_mor.
+Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} {k v} : (@put K V t H k v) with
+    signature (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as put_mor.
 Proof.
-  intros k v s1 s2 Hs.
+  intros s1 s2 Hs.
   destruct Hs as [Hs].
   constructor. intros k_.
   destruct (equiv_dec k k_) as [Heq | Hneq].
@@ -112,10 +112,10 @@ Proof.
   - repeat rewrite <- distinct; auto.
 Qed.
 
-Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@delete K V t H) with
-    signature (@eq K) ==> (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as delete_mor.
+Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} {k : K} : (@delete K V t H k) with
+    signature (@s_eq K V t t H H) ==> (@s_eq K V t t H H) as delete_mor.
 Proof.
-  intros k s1 s2 Hs.
+  intros s1 s2 Hs.
   destruct Hs as [Hs].
   constructor. intros k_.
   destruct (equiv_dec k k_) as [Heq | Hneq].
@@ -123,12 +123,44 @@ Proof.
   - repeat rewrite <- delete_distinct; auto.
 Qed.
 
-Add Parametric Morphism {K V} t `{H : @Storage K V t} `{Hkdec : EqDec K eq} : (@get K V t H) with
-    signature (@eq K) ==> (@s_eq K V t t H H) ==> (@eq (option V)) as get_mor.
+Add Parametric Morphism {K V} t `{H : @Storage K V t} {k : K} : (@get K V t H k) with
+    signature (@s_eq K V t t H H) ==> (@eq (option V)) as get_mor.
 Proof.
-  intros k s1 s2 Hs.
+  intros s1 s2 Hs.
   now destruct Hs as [Hs].
 Qed.
+
+Section srewrite_tests.
+  Context `{Hstor : Storage} `{Heqdec : EqDec K eq}.
+
+  Goal forall (k : K) (a b : t),
+      a == b ->
+      get k a = get k b.
+  Proof.
+    intros k a b H. now rewrite H.
+  Qed.
+
+  Goal forall (k : K) (a b : t),
+      a == b ->
+      delete k a == delete k b.
+  Proof.
+    intros k a b H. now rewrite H.
+  Qed.
+
+  Goal forall (k : K) (v : V) (a b : t),
+      a == b ->
+      put k v a == put k v b.
+  Proof.
+    intros k v a b H. now rewrite H.
+  Qed.
+
+  Goal forall (k1 k2 k3 : K) (v : V) (a b : t),
+      a == b ->
+      get k3 (delete k2 (put k1 v a)) = get k3 (delete k2 (put k1 v b)).
+  Proof.
+    intros k1 k2 k3 v a b H. now rewrite H.
+  Qed.
+End srewrite_tests.
 
 Section WriteLog.
   Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
