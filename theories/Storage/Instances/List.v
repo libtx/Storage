@@ -128,10 +128,13 @@ Proof with auto.
 Qed.
 
 Global Instance listStorage : @Storage K V t :=
-  {| new := [];
+  {|
+    new := [];
     put := list_put;
     get := list_get;
     delete := list_delete;
+
+    key_eq_dec := HKeq_dec;
     new_empty := list_new_empty;
     keep := list_keep;
     distinct := list_distinct;

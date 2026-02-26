@@ -1,6 +1,7 @@
 From Coq Require Import
   FMapAVL
-  OrderedType.
+  OrderedType
+  Classes.EquivDec.
 
 Require Import Classes.
 
@@ -84,12 +85,21 @@ Module Type Make (E : OrderedType).
         eapply M.remove_3; eauto.
     Qed.
 
+    Program Instance keyEqDec : EqDec M.key eq.
+    Next Obligation.
+      specialize (E.eq_dec x y) as H.
+      destruct H as [H|H].
+      - apply dec_eq_is_eq in H. now left.
+      - right. intros H'. now apply dec_eq_is_eq in H'.
+    Qed.
+
     Global Instance fmapStorage : @Storage E.t ValT (M.t ValT) :=
       {|
         new := @M.empty ValT;
         get := @M.find ValT;
         put := @M.add ValT;
         delete := @M.remove ValT;
+        key_eq_dec := keyEqDec;
         new_empty := fmap_new_empty;
         keep := fmap_keep;
         distinct := fmap_distinct;

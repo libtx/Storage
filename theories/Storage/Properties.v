@@ -12,7 +12,7 @@ From LibTx Require Import
   Storage.Tactics.
 
 Section basic.
-  Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
+  Context {K V : Type} {T} `{HT_Storage : @Storage K V T}.
 
   Lemma s_eq_self : forall (s : T), s =s= s.
   Proof.

@@ -15,6 +15,7 @@ Section defns.
       delete : K -> t -> t;
 
       (* Axioms: *)
+      key_eq_dec :: EqDec K eq;
       new_empty : forall k, get k new = None;
       keep : forall s k v, get k (put k v s) = Some v;
       distinct : forall s k1 k2 v2,
@@ -131,7 +132,7 @@ Proof.
 Qed.
 
 Section srewrite_tests.
-  Context `{Hstor : Storage} `{Heqdec : EqDec K eq}.
+  Context `{Hstor : Storage}.
 
   Goal forall (k : K) (a b : t),
       a == b ->
@@ -163,7 +164,7 @@ Section srewrite_tests.
 End srewrite_tests.
 
 Section WriteLog.
-  Context {K V : Type} `{HKeq_dec : EqDec K eq} {T} `{HT_Storage : @Storage K V T}.
+  Context {K V : Type} {T} `{HT_Storage : @Storage K V T}.
 
   Inductive Wlog_elem :=
   | wl_write : K -> V -> Wlog_elem
