@@ -46,6 +46,36 @@ Section basic.
     unfold_s_eq as k_.
     repeat storage_key_case_analysis k_...
   Qed.
+
+  Lemma delete_idempotent k (s : T) :
+    delete k (delete k s) =s= delete k s.
+  Proof.
+    constructor. intros a.
+    destruct (@key_eq_dec _ _ T _ a k) as [Hak|Hak].
+    - rewrite Hak.
+      now repeat rewrite delete_keep.
+    - now rewrite <-delete_distinct with (k2 := k) by assumption.
+  Qed.
+
+  Lemma delete_commute a b (s : T) :
+    delete b (delete a s) =s= delete a (delete b s).
+  Proof.
+    destruct (@key_eq_dec _ _ T _ a b) as [Hab|Hab].
+    - rewrite Hab.
+      now rewrite delete_idempotent.
+    - constructor. intros k.
+      destruct (@key_eq_dec _ _ T _ k b) as [Hbk|Hbk].
+      + rewrite Hbk in *.
+        rewrite <-delete_distinct with (k2 := a) by easy.
+        now repeat rewrite delete_keep.
+      + destruct (@key_eq_dec _ _ T _ k a) as [Hak|Hak].
+        * rewrite Hak.
+          rewrite <-delete_distinct with (k2 := b) by easy.
+          now repeat rewrite delete_keep.
+        * rewrite <-delete_distinct with (k2 := b) by easy.
+          repeat rewrite <-delete_distinct with (k2 := a) by easy.
+          now rewrite <-delete_distinct with (k2 := b) by easy.
+  Qed.
 End basic.
 
 Section s_eq.
