@@ -32,19 +32,28 @@ Section basic.
   Lemma put_same : forall (s : T) k v,
       get k s = Some v ->
       s =s= put k v s.
-  Proof with auto with storage.
+  Proof.
     intros s k v Hkv.
     unfold_s_eq as k_.
-    storage_key_case_analysis k_...
+    storage_key_case_analysis k_; auto with storage.
   Qed.
 
   Lemma put_distict_comm : forall (s : T) k1 k2 v1 v2,
       k1 <> k2 ->
       put k2 v2 (put k1 v1 s) =s= put k1 v1 (put k2 v2 s).
-  Proof with auto with storage.
+  Proof.
     intros s k1 k2 v1 v2 H12.
     unfold_s_eq as k_.
-    repeat storage_key_case_analysis k_...
+    repeat storage_key_case_analysis k_; auto with storage.
+  Qed.
+
+  Lemma put_delete_distinct_comm : forall (s : T) k1 k2 v1,
+      k1 <> k2 ->
+      put k1 v1 (delete k2 s) =s= delete k2 (put k1 v1 s).
+  Proof.
+    intros s k1 k2 v1 Hk.
+    unfold_s_eq as k_.
+    repeat storage_key_case_analysis k_; auto with storage.
   Qed.
 
   Lemma delete_idempotent k (s : T) :
@@ -136,14 +145,14 @@ Section wlog_props.
   Lemma wlog_apply_same : forall (l : Wlog) (s1 s2 : t),
       s1 =s= s2 ->
       wlog_apply l s1 =s= wlog_apply l s2.
-  Proof with auto with storage.
+  Proof.
     intros l s1 s2 Hs12.
     induction l as [|[k v|k] l IH].
     - sauto.
     - unfold_s_eq as k_.  unfold_s_eq in IH. specialize (IH k_).
-      simpl. storage_key_case_analysis k_...
+      simpl. storage_key_case_analysis k_; auto with storage.
     - unfold_s_eq as k_. unfold_s_eq in IH. specialize (IH k_).
-      simpl. storage_key_case_analysis k_...
+      simpl. storage_key_case_analysis k_; auto with storage.
   Qed.
 
   Lemma wlog_app (l1 l2 : Wlog) s :
@@ -182,27 +191,29 @@ Section wlog_props.
   Lemma wlog_equiv_head_shadow (l : Wlog) (e1 e2 : Wlog_elem) :
       wlog_elem_key e1 = wlog_elem_key e2 ->
       wlog_equiv (e1 :: e2 :: l) (e1 :: l).
-  Proof with auto with storage.
+  Proof.
     intros Hk s.
     unfold_s_eq as k_.
     destruct e1 as [k1 v1|k1]; destruct e2 as [k2 v2|k2];
       unfold wlog_elem_key in Hk;
       subst k2;
       storage_simpl;
-      storage_key_case_analysis k_...
+      storage_key_case_analysis k_;
+      auto with storage.
   Qed.
 
   Lemma wlog_equiv_head_comm (l : Wlog) (e1 e2 : Wlog_elem) :
       wlog_elem_key e1 <> wlog_elem_key e2 ->
       wlog_equiv (e2 :: e1 :: l) (e1 :: e2 :: l).
-  Proof with auto with storage.
+  Proof.
     intros Hk s.
     unfold_s_eq as k_.
     destruct e1 as [k1 v1|k1]; destruct e2 as [k2 v2|k2];
       unfold wlog_elem_key in Hk;
       rev_wlog_induction l as k v l' IH;
       storage_simpl;
-      repeat storage_key_case_analysis k_...
+      repeat storage_key_case_analysis k_;
+      auto with storage.
   Qed.
 
   Lemma wlog_equiv_trans (l1 l2 l3 : Wlog) :

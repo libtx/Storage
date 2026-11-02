@@ -59,30 +59,30 @@ Qed.
 
 Let list_delete_keep : forall (s : t) k,
     list_get k (list_delete k s) = None.
-Proof with try easy.
+Proof.
   intros.
-  induction s as [|[k1 v] t IH]...
+  induction s as [|[k1 v] t IH]; [easy|].
   simpl.
-  destruct (eq_dec k k1)...
+  destruct (eq_dec k k1); [easy|].
   simpl.
   rewrite IH.
-  destruct (eq_dec k1 k) as [H|H]; try symmetry in H...
+  destruct (eq_dec k1 k) as [H|H]; try symmetry in H; easy.
 Qed.
 
 Let list_delete_distinct : forall (s : t) (k1 k2 : K),
     k1 <> k2 ->
     list_get k1 s = list_get k1 (list_delete k2 s).
-Proof with auto.
+Proof.
   intros.
-  induction s...
+  induction s; auto.
   destruct a as [k v].
   destruct (eq_dec k k1) as [|Hneq_k_k1]; subst.
-  - simpl in *...
+  - simpl in *; auto.
     destruct (eq_dec k2 k1) as [Heq12|Hneq12].
     + subst. now contradiction H.
     + simpl.
-      destruct (eq_dec k1 k1)...
-  - simpl...
+      destruct (eq_dec k1 k1); auto.
+  - simpl; auto.
     destruct (eq_dec k k1); destruct (eq_dec k2 k); firstorder.
     simpl.
     destruct (eq_dec k k1); firstorder.
@@ -100,22 +100,22 @@ Qed.
 
 Let list_keys_some : forall (s : t) k,
     In k (list_keys s) <-> exists v, list_get k s = Some v.
-Proof with auto.
+Proof.
   intros.
   split; intros H.
   { induction s; firstorder.
     destruct a as [k' v].
     destruct (eq_dec k k'); subst.
-    - exists v. simpl...
-      destruct (eq_dec k' k')...
+    - exists v. simpl; auto.
+      destruct (eq_dec k' k'); auto.
       firstorder.
     - destruct IHs.
-      + simpl in H. destruct H as [H|H]...
+      + simpl in H. destruct H as [H|H]; auto.
         symmetry in H.
         now contradiction n.
       + exists x.
         simpl.
-        destruct (eq_dec k' k)...
+        destruct (eq_dec k' k); auto.
         symmetry in e. firstorder.
   }
   { destruct H.
