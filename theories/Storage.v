@@ -18,3 +18,5 @@ Require Export
   Storage.Classes
   Storage.Tactics
   Storage.Properties.
+
+Require Import Storage.Instances.List.
