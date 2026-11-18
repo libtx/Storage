@@ -4,9 +4,6 @@ From Stdlib Require Import
 
 Import ListNotations.
 
-From Hammer Require Import
-  Tactics.
-
 From LibTx Require Import
   Storage.Classes
   Storage.Tactics.
@@ -93,19 +90,24 @@ Section s_eq.
   Lemma s_eq_refl_dist a :
     a =s= a.
   Proof.
-    sauto.
+    now constructor.
   Qed.
 
   Lemma s_eq_trans_dist a b c :
     a =s= b -> b =s= c -> a =s= c.
   Proof.
-    sauto.
+    intros Hab Hbc.
+    inversion Hab. inversion Hbc.
+    constructor. intros k.
+    now rewrite H1, H2.
   Qed.
 
   Lemma s_eq_symm_dist a b :
     a =s= b -> b =s= a.
   Proof.
-    sauto.
+    intros Hab. inversion Hab.
+    constructor. intros k.
+    now rewrite H1.
   Qed.
 End s_eq.
 
@@ -148,7 +150,8 @@ Section wlog_props.
   Proof.
     intros l s1 s2 Hs12.
     induction l as [|[k v|k] l IH].
-    - sauto.
+    - constructor. intros k.
+      inversion Hs12. simpl. now rewrite H0.
     - unfold_s_eq as k_.  unfold_s_eq in IH. specialize (IH k_).
       simpl. storage_key_case_analysis k_; auto with storage.
     - unfold_s_eq as k_. unfold_s_eq in IH. specialize (IH k_).
@@ -170,7 +173,9 @@ Section wlog_props.
     intros H12.
     rewrite wlog_app in H12.
     set (s' := fold_right wlog_elem_apply s l2).
-    exists s'. sauto.
+    exists s'.
+    repeat split.
+    now inversion H12.
   Qed.
 
   Definition wlog_equiv (l1 l2 : Wlog) :=
@@ -185,7 +190,7 @@ Section wlog_props.
     destruct a as [k v|k]; simpl;
       unfold_s_eq as k_; unfold_s_eq in H12; specialize (H12 k_);
       storage_key_case_analysis k_;
-      sauto.
+      easy.
   Qed.
 
   Lemma wlog_equiv_head_shadow (l : Wlog) (e1 e2 : Wlog_elem) :
@@ -307,10 +312,11 @@ Section dirty_bootstrap.
   Proof.
     intros l.
     induction l; intros l' Hl'.
-    - sauto.
+    - now inversion Hl'.
     - inversion_clear Hl'.
       + rewrite <-app_comm_cons.
-        apply wlog_equiv_cons. sauto.
+        apply wlog_equiv_cons.
+        now apply IHl.
       + specialize (IHl l'0). apply IHl in H1.
         intros s. specialize (H1 s).
         unfold_s_eq as k_.

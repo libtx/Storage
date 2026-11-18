@@ -15,7 +15,6 @@ build: [
 install: [make "install"]
 depends: [
   "rocq-core" {(>= "9.0")}
-  "coq-hammer"
 ]
 
 tags: [
